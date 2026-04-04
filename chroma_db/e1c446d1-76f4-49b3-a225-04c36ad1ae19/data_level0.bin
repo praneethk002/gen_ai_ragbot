@@ -1,0 +1,1712 @@
+      trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def tick(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def undo(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def retry(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def expand(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def collapse(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def download(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def copy(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+     example:
+        `"username/custom_transformers"`
+    delete_patterns (`list[str]`):
+        List of files or folders to delete. Each string can either be
+        a file path, a folder path, or a wildcard pattern. Patterns are Standard
+        Wildcards (globbing patterns) as documented [here](https://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm).
+        The pattern matching is based on [`fnmatch`](https://docs.python.org/3/library/fnmatch.html).
+        Note that `fnmatch` matches `*` across path boundaries, unlike traditional Unix shell globbing.
+        E.g. `["file.txt", "folder/", "data/*.parquet"]`
+    token (`bool` or `str`, *optional*):
+        A valid user access token (string). Defaults to the locally saved
+        token, which is the recommended method for authentication (see
+        https://huggingface.co/docs/huggingface_hub/quick-start#authentication).
+        To disable authentication, pass `False`.
+        to the stored token.
+    repo_type (`str`, *optional*):
+        Type of the repo to delete files from. Can be `"model"`,
+        `"dataset"` or `"space"`. Defaults to `"model"`.
+    revision (`str`, *optional*):
+        The git revision to commit from. Defaults to the head of the `"main"` branch.
+    commit_message (`str`, *optional*):
+        The summary (first line) of the generated commit. Defaults to
+        `f"Delete files using huggingface_hub"`.
+    commit_description (`str` *optional*)
+        The description of the generated commit.
+    create_pr (`boolean`, *optional*):
+        Whether or not to create a Pull Request with that commit. Defaults to `False`.
+        If `revision` is not set, PR is opened against the `"main"` branch. If
+        `revision` is set and is a branch, PR is opened against this branch. If
+        `revision` is set and is not a branch name (example: a commit oid), an
+        `RevisionNotFoundError` is returned by the server.
+    parent_commit (`str`, *optional*):
+        The OID / SHA of the parent commit, as a hexadecimal string. Shorthands (7 first characters) are also supported.
+        If specified and `create_pr` is `False`, the commit will fail if `revision` does not point to `parent_commit`.
+        If specified and `create_pr` is `True`, the pull request will be created from `parent_commit`.
+        Specifying `parent_commit` ensures the repo has not changed before committing the changes, and can be
+        especially useful if the repo is updated / committed to concurrently.
+rù   )rπ   râ   rV  r]  r!  zDelete files ⁄ rR  rl  )rc  r«  r˙  )r∆   rπ   rV  rñ  râ   r!  rÙ   rı   r  rÚ  rı  s   &&&$$$$$$$ ré   ⁄delete_files⁄HfApi.delete_filesc  sy   Ä x ◊3—3ÿ¿/–`b–mu 4Û 
+à
+ “!ÿ,®SØX©X∞o”-F–,G–G\–]àN‡◊!—!ÿÿÿÿ!ÿÿ)ÿ1ÿÿ' "Û 
+
+ 
+	
+rê   c               Û@   Ä V ^8Ñ  d   QhRRRRRRRRRRR	RR
+RRRRRRR/
+# )rÑ   r]  rö   rπ   rñ  r©  râ   rä   r!  rÙ   rı   r  rÜ   rÚ  rã   rÚ   rå   )rç   s   "ré   rè   rù  ≥  sz   Ä ˜ A
+Ò A
+‡A
+ A
+
+ !A
+ A
+ A
+ #A
+ 'A
+ A
+ "A
+ 
+ÒA
+rê   c               Ûb   Ä T P                  TTT\        VRR7      .TVe   TMRV R2VVV	R7	      # )aƒ  
+Deletes a folder in the given repo.
+
+Simple wrapper around [`create_commit`] method.
+
+Args:
+    path_in_repo (`str`):
+        Relative folder path in the repo, for example: `"checkpoints/1fec34a"`.
+    repo_id (`str`):
+        The repository from which the folder will be deleted, for example:
+        `"username/custom_transformers"`
+    token (`bool` or `str`, *optional*):
+        A valid user access token (string). Defaults to the locally saved
+        token, which is the recommended method for authentication (see
+        https://huggingface.co/docs/huggingface_hub/quick-start#authentication).
+        To disable authentication, pass `False`.
+        to the stored token.
+    repo_type (`str`, *optional*):
+        Set to `"dataset"` or `"space"` if the folder is in a dataset or
+        space, `None` or `"model"` if in a model. Default is `None`.
+    revision (`str`, *optional*):
+        The git revision to commit from. Defaults to the head of the `"main"` branch.
+    commit_message (`str`, *optional*):
+        The summary / title / first line of the generated commit. Defaults to
+        `f"Delete folder {path_in_repo} with huggingface_hub"`.
+    commit_description (`str` *optional*)
+        The description of the generated commit.
+    create_pr (`boolean`, *optional*):
+        Whether or not to create a Pull Request with that commit. Defaults to `False`.
+        If `revision` is not set, PR is opened against the `"main"` branch. If
+        `revision` is set and is a branch, PR is opened against this branch. If
+        `revision` is set and is not a branch name (example: a commit oid), an
+        `RevisionNotFoundError` is returned by the server.
+    parent_commit (`str`, *optional*):
+        The OID / SHA of the parent commit, as a hexadecimal string. Shorthands (7 first characters) are also supported.
+        If specified and `create_pr` is `False`, the commit will fail if `revision` does not point to `parent_commit`.
+        If specified and `create_pr` is `True`, the pull request will be created from `parent_commit`.
+        Specifying `parent_commit` ensures the repo has not changed before committing the changes, and can be
+        especially useful if the repo is updated / committed to concurrently.
+T©r]  ⁄	is_folderzDelete folder rR  rl  )r˙  r+   )
+r∆   r]  rπ   rñ  râ   r!  rÙ   rı   r  rÚ  s
+   &&&$$$$$$$ré   ⁄delete_folder⁄HfApi.delete_folder≤  sV   Ä l ◊!—!ÿÿÿ‹-∏<–SW‘X–Yÿ‡"0“"<ë¿N–S_–R`–`u–Bv‡1ÿÿ' "Û 
+ 	
+rê   ⁄num_workers⁄print_report⁄print_report_everyc               ÛD   Ä V ^8Ñ  d   QhRRRRRRRRRR	R
+RRRRRRRRRRR/# )rÑ   rπ   rö   rX  rY  râ   r!  rä   rÖ   rÜ   rT  rZ  rU  rz  r˛   r{  r€   r|  r”   rã   r-  rå   )rç   s   "ré   rè   rù  ˆ  sÖ   Ä ˜ r
+Ò r
+‡r
+  r
+
+ r
+ r
+ r
+ /r
+ 0r
+  r
+ r
+  r
+ 
+Òr
+rê   c               Û.   Ä \        V VVVVVVVVV	V
+R7      # )aË  Upload a large folder to the Hub in the most resilient way possible.
+
+Several workers are started to upload files in an optimized way. Before being committed to a repo, files must be
+hashed and be pre-uploaded if they are LFS files. Workers will perform these tasks for each file in the folder.
+At each step, some metadata information about the upload process is saved in the folder under `.cache/.huggingface/`
+to be able to resume the process if interrupted. The whole process might result in several commits.
+
+Args:
+    repo_id (`str`):
+        The repository to which the file will be uploaded.
+        E.g. `"HuggingFaceTB/smollm-corpus"`.
+    folder_path (`str` or `Path`):
+        Path to the folder to upload on the local file system.
+    repo_type (`str`):
+        Type of the repository. Must be one of `"model"`, `"dataset"` or `"space"`.
+        Unlike in all other `HfApi` methods, `repo_type` is explicitly required here. This is to avoid
+        any mistake when uploading a large folder to the Hub, and therefore prevent from having to re-upload
+        everything.
+    revision (`str`, `optional`):
+        The branch to commit to. If not provided, the `main` branch will be used.
+    private (`bool`, `optional`):
+        Whether the repository should be private.
+        If `None` (default), the repo will be public unless the organization's default is private.
+    allow_patterns (`list[str]` or `str`, *optional*):
+        If provided, only files matching at least one pattern are uploaded.
+    ignore_patterns (`list[str]` or `str`, *optional*):
+        If provided, files matching any of the patterns are not uploaded.
+    num_workers (`int`, *optional*):
+        Number of workers to start. Defaults to half of CPU cores (minimum 1).
+        A higher number of workers may speed up the process if your machine allows it. However, on machines with a
+        slower connection, it is recommended to keep the number of workers low to ensure better resumability.
+        Indeed, partially uploaded files will have to be completely re-uploaded if the process is interrupted.
+    print_report (`bool`, *optional*):
+        Whether to print a report of the upload progress. Defaults to True.
+        Report is printed to `sys.stdout` every X seconds (60 by defaults) and overwrites the previous report.
+    print_report_every (`int`, *optional*):
+        Frequency at which the report is printed. Defaults to 60 seconds.
+
+> [!TIP]
+> A few things to keep in mind:
+>     - Repository limits still apply: https://huggingface.co/docs/hub/repositories-recommendations
+>     - Do not start several processes in parallel.
+>     - You can interrupt and resume the process at any time.
+>     - Do not upload the same folder to several repositories. If you need to do so, you must delete the local `.cache/.huggingface/` folder first.
+
+> [!WARNING]
+> While being much more robust to upload large folders, `upload_large_folder` is more limited than [`upload_folder`] feature-wise. In practice:
+>     - you cannot set a custom `path_in_repo`. If you want to upload to a subfolder, you need to set the proper structure locally.
+>     - you cannot set a custom `commit_message` and `commit_description` since multiple commits are created.
+>     - you cannot delete from the repo while uploading. Please make a separate commit first.
+>     - you cannot create a PR directly. Please create a PR first (from the UI or using [`create_pull_request`]) and then commit to it by passing `revision`.
+
+**Technical details:**
+
+`upload_large_folder` process is as follow:
+    1. (Check parameters and setup.)
+    2. Create repo if missing.
+    3. List local files to upload.
+    4. Run validation checks and display warnings if repository limits might be exceeded:
+        - Warns if the total number of files exceeds 100k (recommended limit).
+        - Warns if any folder contains more than 10k files (recommended limit).
+        - Warns about files larger than 20GB (recommended) or 50GB (hard limit).
+    5. Start workers. Workers can perform the following tasks:
+        - Hash a file.
+        - Get upload mode (regular or LFS) for a list of files.
+        - Pre-upload an LFS file.
+        - Commit a bunch of files.
+    Once a worker finishes a task, it will move on to the next task based on the priority list (see below) until
+    all files are uploaded and committed.
+    6. While workers are up, regularly print a report to sys.stdout.
+
+Order of priority:
+    1. Commit if more than 5 minutes since last commit attempt (and at least 1 file).
+    2. Commit if at least 150 files are ready to commit.
+    3. Get upload mode if at least 10 files have been hashed.
+    4. Pre-upload LFS file if at least 1 file and no worker is pre-uploading.
+    5. Hash file if at least 1 file and no worker is hashing.
+    6. Get upload mode if at least 1 file and no worker is getting upload mode.
+    7. Pre-upload LFS file if at least 1 file.
+    8. Hash file if at least 1 file to hash.
+    9. Get upload mode if at least 1 file to get upload mode.
+    10. Commit if at least 1 file to commit and at least 1 min since last commit attempt.
+    11. Commit if at least 1 file to commit and all other queues are empty.
+
+Special rules:
+    - Only one worker can commit at a time.
+    - If no tasks are available, the worker waits for 10 seconds before checking again.
+)
+rπ   rX  râ   r!  rÖ   rT  rU  rz  r{  r|  rA   )r∆   rπ   rX  râ   r!  rÖ   rT  rU  rz  r{  r|  s   &&&$$$$$$$$ré   ⁄upload_large_folder⁄HfApi.upload_large_folderˆ  s3   Ä ÙL ,ÿÿÿ#ÿÿÿÿ)ÿ+ÿ#ÿ%ÿ1Ù
+ 	
+rê   c               Û(   Ä V ^8Ñ  d   QhRRRRRRRR/# )	rÑ   r  rö   rñ  r©  r"  r&  rã   rT   rå   )rç   s   "ré   rè   rù  k  s4   Ä ˜ #
+Ò #
+ #
+ !	#
+
+ #
+ 
+Ò#
+rê   c          
+     Ûñ   Ä Vf   V P                   p\        VVVV P                  V P                  V P                  V P
+                  R7      # )aø  Fetch metadata of a file versioned on the Hub for a given url.
+
+Args:
+    url (`str`):
+        File url, for example returned by [`hf_hub_url`].
+    token (`bool` or `str`, *optional*):
+        A valid user access token (string). Defaults to the locally saved
+        token, which is the recommended method for authentication (see
+        https://huggingface.co/docs/huggingface_hub/quick-start#authentication).
+        To disable authentication, pass `False`.
+    timeout (`float`, *optional*, defaults to 10):
+        How many seconds to wait for the server to send metadata before giving up.
+
+Returns:
+    A [`HfFileMetadata`] object containing metadata such as location, etag, size and commit_hash.
+)r  rñ  r"  rx  rò  rô  r  )rñ  rU   rx  rò  rô  r  )r∆   r  rñ  r"  s   &$$$ré   rU   ⁄HfApi.get_hf_file_metadataj  sH   Ä 0 ä=‡óJëJàE‰#ÿÿÿÿ◊*—*ÿ ◊0—0ÿóëÿó]ë]Ù
+ 	
+rê   ⁄	subfolder⁄force_download⁄etag_timeout⁄local_files_only⁄
+tqdm_class⁄dry_runc               ÛP   Ä V ^8Ñ  d   QhRRRRRRRRRRRR	R
+R	RRRRRRRRRRRRRR/# )rÑ   rπ   rö   rF  rÑ  rä   râ   r!  rg  ri  rf  rÖ  r€   rÜ  rR  rñ  r©  rá  rà  ˙type[base_tqdm] | Nonerâ  r˜  rã   rå   )rç   s   "ré   rè   rù  ë  sñ   Ä ˜ Ò ‡ 
+    % %   !  +    
+Ò!rê   c               	Û   Ä R # r¬   rå   ©r∆   rπ   rF  rÑ  râ   r!  rg  rf  rÖ  rÜ  rñ  rá  rà  râ  s   &&&$$$$$$$$$$$ré   ⁄hf_hub_download⁄HfApi.hf_hub_downloadê  s   Ä Ò" rê   c               ÛP   Ä V ^8Ñ  d   QhRRRRRRRRRRRR	R
+R	RRRRRRRRRRRRRR/# )rÑ   rπ   rö   rF  rÑ  rä   râ   r!  rg  ri  rf  rÖ  r€   rÜ  rR  rñ  r©  rá  rà  rã  râ  r˛  rã   rS   rå   )rç   s   "ré   rè   rù  §  sñ   Ä ˜ Ò ‡ 
+    % %   !  +   
+Ò!rê   c               	Û   Ä R # r¬   rå   rç  s   &&&$$$$$$$$$$$ré   ré  rè  £  s   Ä Ò" rê   c               ÛP   Ä V ^8Ñ  d   QhRRRRRRRRRRRR	R
+R	RRRRRRRRRRRRRR/# )rÑ   rπ   rö   rF  rÑ  rä   râ   r!  rg  ri  rf  rÖ  r€   rÜ  rR  rñ  r©  rá  rà  rã  râ  rã   zstr | DryRunFileInforå   )rç   s   "ré   rè   rù  ∑  s¶   Ä ˜ K
+Ò K
+‡K
+ K
+
+ K
+ K
+ K
+ %K
+ %K
+ K
+ K
+ !K
+ K
+ +K
+ K
+  
+Ò!K
+rê   c               Û
+  Ä ^RI Hp V
+f   V P                  p
+V! R/ RVbRVbRVbRVbRVbRV P                  bRV P                  bR	V P
+                  bR
+VbRVbRV P                  bRVbRV	bRV
+bRV P                  bRVbRVbRVb # )un  Download a given file if it's not already present in the local cache.
+
+The new cache file layout looks like this:
+- The cache directory contains one subfolder per repo_id (namespaced by repo type)
+- inside each repo folder:
+    - refs is a list of the latest known revision => commit_hash pairs
+    - blobs contains the actual file blobs (identified by their git-sha or sha256, depending on
+    whether they're LFS files or not)
+    - snapshots contains one subfolder per commit, each "commit" contains the subset of the files
+    that have been resolved at that particular commit. Each filename is a symlink to the blob
+    at that particular commit.
+
+```
+[  96]  .
+‚îî‚îÄ‚îÄ [ 160]  models--julien-c--EsperBERTo-small
+    ‚îú‚îÄ‚îÄ [ 160]  blobs
+    ‚îÇ   ‚îú‚îÄ‚îÄ [321M]  403450e234d65943a7dcf7e05a771ce3c92faa84dd07db4ac20f592037a1e4bd
+    ‚îÇ   ‚îú‚îÄ‚îÄ [ 398]  7cb18dc9bafbfcf74629a4b760af1b160957a83e
+    ‚îÇ   ‚îî‚îÄ‚îÄ [1.4K]  d7edf6bd2a681fb0175f7735299831ee1b22b812
+    ‚îú‚îÄ‚îÄ [  96]  refs
+    ‚îÇ   ‚îî‚îÄ‚îÄ [  40]  main
+    ‚îî‚îÄ‚îÄ [ 128]  snapshots
+        ‚îú‚îÄ‚îÄ [ 128]  2439f60ef33a0d46d85da5001d52aeda5b00ce9f
+        ‚îÇ   ‚îú‚îÄ‚îÄ [  52]  README.md -> ../../blobs/d7edf6bd2a681fb0175f7735299831ee1b22b812
+        ‚îÇ   ‚îî‚îÄ‚îÄ [  76]  pytorch_model.bin -> ../../blobs/403450e234d65943a7dcf7e05a771ce3c92faa84dd07db4ac20f592037a1e4bd
+        ‚îî‚îÄ‚îÄ [ 128]  bbc77c8132af1cc5cf678da3f1ddf2de43606d48
+            ‚î        Ä∏⁄   πæ     ˇˇˇˇˇˇˇˇd__futurclass HTML(BlockContext, Component):
+    """
+    Creates a component with arbitrary HTML. Can include CSS and JavaScript to create highly customized and interactive components.
+    Example:
+        ```python
+        import gradio as gr
+
+        with gr.Blocks() as demo:
+            basic_html = gr.HTML("<h2>This is a basic HTML component</h2>")
+
+            button_set = gr.HTML(["Option 1", "Option 2", "Option 3"],
+                           html_template="{{#each value}}<button class='option-btn'>{{this}}</button>{{/each}}",
+                           css_template="button { margin: 5px; padding: 10px; }",
+                           js_on_load="element.querySelectorAll('.option-btn').forEach(btn => { btn.addEventListener('click', () => { trigger('click', {option: btn.innerText}); }); });")
+            clicked_option = gr.Textbox(label="Clicked Option")
+            def on_button_click(evt: gr.EventData):
+                return evt.option
+            button_set.click(on_button_click, outputs=clicked_option)
+
+        demo.launch()
+        ```
+    Demos: super_html
+    Guides: custom-HTML-components, custom-CSS-and-JS
+    """
+
+    EVENTS = all_events
+
+    def __init__(
+        self,
+        value: Any | Callable | None = None,
+        *,
+        label: str | I18nData | None = None,
+        html_template: str = "${value}",
+        css_template: str = "",
+        js_on_load: str
+        | None = "element.addEventListener('click', function() { trigger('click') });",
+        apply_default_css: bool = True,
+        every: Timer | float | None = None,
+        inputs: Component | Sequence[Component] | set[Component] | None = None,
+        show_label: bool = False,
+        visible: bool | Literal["hidden"] = True,
+        elem_id: str | None = None,
+        elem_classes: list[str] | str | None = None,
+        render: bool = True,
+        key: int | str | tuple[int | str, ...] | None = None,
+        preserved_by_key: list[str] | str | None = "value",
+        min_height: int | None = None,
+        max_height: int | None = None,
+        container: bool = False,
+        padding: bool = False,
+        autoscroll: bool = False,
+        buttons: list[Button] | None = None,
+        head: str | None = None,
+        server_functions: list[Callable] | None = None,
+        **props: Any,
+    ):
+        """
+        Parameters:
+            value: The HTML content in the ${value} tag in the html_template. For example, if html_template="<p>${value}</p>" and value="Hello, world!", the component will render as `"<p>Hello, world!</p>"`.
+            label: The label for this component. Is used as the header if there are a table of examples for this component. If None and used in a `gr.Interface`, the label will be the name of the parameter this component is assigned to.
+            html_template: A string representing the HTML template for this component as a JS template string and Handlebars template. The `${value}` tag will be replaced with the `value` parameter, and all other tags will be filled in with the values from `props`. This element can have children when used in a `with gr.HTML(...):` context, and the children will be rendered to replace `@children` substring, which cannot be nested inside any HTML tags.
+            css_template: A string representing the CSS template for this component as a JS template string and Handlebars template. The CSS will be automatically scoped to this component, and rules outside a block will target the component's root element. The `${value}` tag will be replaced with the `value` parameter, and all other tags will be filled in with the values from `props`.
+            js_on_load: A string representing the JavaScript code that will be executed when the component is loaded. The `element` variable refers to the HTML element of this component, and can be used to access children such as `element.querySelector()`. The `trigger` function can be used to trigger events, such as `trigger('click')`. The value and other props can be edited through `props`, e.g. `props.value = "new value"` which will re-render the HTML template. If `server_functions` is provided, a `server` object is also available in `js_on_load`, where each function is accessible as an async method, e.g. `server.list_files(path).then(files => ...)` or `const files = await server.list_files(path)`. The `upload` async function can be used to upload a JavaScript `File` object to the Gradio server, returning a dictionary with `path` (the server-side file path) and `url` (the public URL to access the file), e.g. `const { path, url } = await upload(file)`. The `watch` function can be used to observe prop changes when the component is an output to a Python event listener: `watch('value', () => { ... })` runs the callback after the template re-renders whenever `value` changes, or `watch(['value', 'color'], () => { ... })` to watch multiple props.`.
+            apply_default_css: If True, default Gradio CSS styles will be applied to the HTML component.
+            head: A raw HTML string to inject into the document `<head>` before `js_on_load` runs. Typically used for `<script>` and `<link>` tags to load third-party libraries. Scripts are deduplicated by `src` and links by `href`, so multiple components requiring the same library won't load it twice.
+            every: Continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            inputs: Components that are used as inputs to calculate `value` if `value` is a function (has no effect otherwise). `value` is recalculated any time the inputs change.
+            show_label: If True, the label will be displayed. If False, the label will be hidden.
+            visible: If False, component will be hidden. If "hidden", component will be visually hidden and not take up space in the layout but still exist in the DOM
+            elem_id: An optional string that is assigned as the id of this component in the HTML DOM. Can be used for targeting CSS styles.
+            elem_classes: An optional list of strings that are assigned as the classes of this component in the HTML DOM. Can be used for targeting CSS styles.
+            render: If False, component will not render be rendered in the Blocks context. Should be used if the intention is to assign event listeners now but render the component later.
+            key: in a gr.render, Components with the same key across re-renders are treated as the same component, not a new component. Properties set in 'preserved_by_key' are not reset across a re-render.
+            preserved_by_key: A list of parameters from this component's constructor. Inside a gr.render() function, if a component is re-rendered with the same key, these (and only these) parameters will be preserved in the UI (if they have been changed by the user or an event listener) instead of re-rendered based on the values provided during constructor.
+            min_height: The minimum height of the component, specified in pixels if a number is passed, or in CSS units if a string is passed. If HTML content exceeds the height, the component will expand to fit the content.
+            max_height: The maximum height of the component, specified in pixels if a number is passed, or in CSS units if a string is passed. If content exceeds the height, the component will scroll.
+            container: If True, the HTML component will be displayed in a container. Default is False.
+            padding: If True, the HTML component will have a certain padding (set by the `--block-padding` CSS variable) in all directions. Default is False.
+            autoscroll: If True, will automatically scroll to the bottom of the component when the content changes, unless the user has scrolled up. If False, will not scroll to the bottom when the content changes.
+            buttons: A list of gr.Button() instances to show in the top right corner of the component. Custom buttons will appear in the toolbar with their configured icon and/or label, and clicking them will trigger any .click() events registered on the button.
+            server_functions: A list of Python functions that can be called from `js_on_load` via the `server` object. For example, if you pass `server_functions=[my_func]`, you can call `server.my_func(arg1, arg2)` in your `js_on_load` code. Each function becomes an async method that sends the call to the Python backend and returns the result.
+            props: Additional keyword arguments to pass into the HTML and CSS templates for rendering.
+        """
+        self.html_template = html_template
+        self.css_template = css_template
+        self.js_on_load = js_on_load
+        self.apply_default_css = apply_default_css
+        self.head = head
+        self.min_height = min_height
+        self.max_height = max_height
+        self.padding = padding
+        self.autoscroll = autoscroll
+        self.props = props
+        self.component_class_name = self.__class__.__name__
+        BlockContext.__init__(
+            self,
+            visible=visible,
+            elem_id=elem_id,
+            elem_classes=elem_classes,
+            render=render,
+            key=key,
+            preserved_by_key=preserved_by_key,
+        )
+        Component.__init__(
+            self,
+            label=label,
+            every=every,
+            inputs=inputs,
+            show_label=show_label,
+            visible=visible,
+            elem_id=elem_id,
+            elem_classes=elem_classes,
+            render=render,
+            key=key,
+            preserved_by_key=preserved_by_key,
+            value=value,
+            container=container,
+        )
+        self.buttons = set_default_buttons(buttons, None)
+        if server_functions:
+            for fn in server_functions:
+                decorated = server(fn)
+                fn_name = getattr(fn, "__name__", str(fn))
+                setattr(self, fn_name, decorated)
+                self.server_fns.append(decorated)
+
+    def example_payload(self) -> Any:
+        return "<p>Hello</p>"
+
+    def example_value(self) -> Any:
+        return "<p>Hello</p>"
+
+    def preprocess(self, payload: str | None) -> str | None:
+        """
+        Parameters:
+            payload: string corresponding to the HTML
+        Returns:
+            (Rarely used) passes the HTML as a `str`.
+        """
+        return payload
+
+    def postprocess(self, value: str | None) -> str | None:
+        """
+        Parameters:
+            value: Expects a `str` consisting of valid HTML.
+        Returns:
+            Returns the HTML string.
+        """
+        return value
+
+    def api_info(self) -> dict[str, Any]:
+        return {"type": "string"}
+
+    @property
+    def skip_api(self):
+        return False
+
+    def get_config(self) -> dict[str, Any]:  # type: ignore[override]
+        if type(self) is not HTML:
+            config = {
+                **super().get_config(),
+                **super().get_config(HTML),
+            }
+        else:
+            config = super().get_config()
+        # For custom HTML components, we use the component_class_name
+        # to identify the component in the frontend when reporting errors.
+        config["component_class_name"] = self.component_class_name
+        return config
+
+    def __getattr__(self, name: str):
+        js = self.__dict__.get("js_on_load") or ""
+        pattern = rf"""(?:['"`]){re.escape(name)}(?:['"`])"""
+        if re.search(pattern, js):
+            trigger = EventListener(event_name=name)
+            return partial(trigger.listener, self)
+        raise AttributeError(
+            f"'{type(self).__name__}' object has no attribute '{name}'. "
+            f"If '{name}' is a custom event, make sure to include '{name}' "
+            f"(enclosed in quotes) in the js_on_load string."
+        )
+
+    def get_block_name(self):
+        return "html"
+
+    def _to_publish_format(
+        self,
+        name: str | None = None,
+        head: str | None = None,
+        description: str = "",
+        author: str = "",
+        tags: list[str] | None = None,
+        repo_url: str | None = None,
+    ) -> dict[str, Any]:
+        """Convert this HTML component to the format expected by the HTML Components Gallery
+        (https://www.gradio.app/custom-components/html-gallery).
+
+        Parameters:
+            name: Display name for the component. Defaults to the class name (for subclasses) or label.
+            description: Short description of what the component does.
+            author: Author name.
+            tags: List of tags for search/filtering.
+            repo_url: URL to the source repo (GitHub or HuggingFace Spaces).
+        Returns:
+            A dictionary matching the HTMLComponentEntry format for the gallery.
+        """
+        if name is None:
+            if type(self) is not HTML:
+                name = re.sub(r"(?<!^)(?=[A-Z])", " ", type(self).__name__)
+            elif self.label:
+                name = str(self.label)
+            else:
+                name = "Untitled Component"
+
+        comp_id = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+        if type(self) is not HTML:
+            try:
+                python_code = textwrap.dedent(inspect.getsource(type(self)))
+            except (OSError, TypeError):
+                python_code = ""
+        else:
+            python_code = self._generate_constructor_code()
+
+        default_props: dict[str, Any] = {}
+        default_props["value"] = self.value if self.value is not None else ""
+        if self.label is not None:
+            default_props["label"] = str(self.label)
+        default_props.update(self.props)
+
+        result = {
+            "id": comp_id,
+            "name": name,
+            "description": description,
+            "author": author,
+            "tags": tags if tags is not None else [],
+            "html_template": self.html_template,
+            "css_template": self.css_template,
+            "js_on_load": self.js_on_load or "",
+            "default_props": default_props,
+            "python_code": python_code,
+            "head": head or self.head or "",
+        }
+        if repo_url:
+            result["repo_url"] = repo_url
+        return result
+
+    def push_to_hub(
+        self,
+        name: str | None = None,
+        head: str | None = None,
+        description: str = "",
+        author: str = "",
+        tags: list[str] | None = None,
+        repo_url: str | None = None,
+        token: str | None = None,
+    ) -> str:
+        """Push this HTML component to the HTML Components Gallery as a pull request.
+
+        Creates a JSON file in the `components/` directory of the dataset repo
+        and opens a pull request for review.
+
+        Parameters:
+            name: Display name for the component. Defaults to the class name (for subclasses) or label.
+            head: Raw HTML to inject into `<head>` (e.g. external scripts). Only needed if your component expects a `<head>` script to be added by the parent Gradio application.
+            description: Short description of what the component does.
+            author: Author name (e.g. your HuggingFace username).
+            tags: List of tags for search/filtering.
+            category: One of "input", "display", or "form".
+            repo_url: URL to the source repo (GitHub or HuggingFace Spaces).
+            token: HuggingFace token. If None, uses the cached token from `huggingface-cli login`.
+        Returns:
+            The URL of the created pull request.
+        """
+        import json
+
+        from huggingface_hub import CommitOperationAdd, HfApi, hf_hub_download
+
+        data = self._to_publish_format(
+            name=name,
+            head=head or self.head,
+            description=description,
+            author=author,
+            tags=tags,
+            repo_url=repo_url,
+        )
+        comp_id = data["id"]
+        json_bytes = json.dumps(data, indent=2).encode("utf-8")
+
+        # Build manifest entry (lightweight metadata only)
+        manifest_keys = [
+            "id",
+            "name",
+            "description",
+            "author",
+            "tags",
+            "repo_url",
+        ]
+        manifest_entry = {k: data[k] for k in manifest_keys if k in data}
+
+        api = HfApi(token=token)
+
+        # Fetch current manifest and append new entry
+        try:
+            manifest_path = hf_hub_download(
+                repo_id="gradio/custom-html-gallery",
+                repo_type="dataset",
+                filename="manifest.json",
+                token=token,
+            )
+            with open(manifest_path) as f:
+                manifest = json.load(f)
+        except Exception:
+            manifest = []
+
+        # Replace existing entry with same id, or append
+        manifest = [e for e in manifest if e.get("id") != comp_id]
+        manifest.append(manifest_entry)
+        manifest_bytes = json.dumps(manifest, indent=2).encode("utf-8")
+
+        commit = api.create_commit(
+            repo_id="gradio/custom-html-gallery",
+            repo_type="dataset",
+            operations=[
+                CommitOperationAdd(
+                    path_in_repo=f"components/{comp_id}.json",
+                    path_or_fileobj=json_bytes,
+                ),
+                CommitOperationAdd(
+                    path_in_repo="manifest.json",
+                    path_or_fileobj=manifest_bytes,
+                ),
+            ],
+            commit_message=f"Add component: {data['name']}",
+            commit_description=f"**{data['name']}**\n\n{data['description']}\n\nAuthor: @{data['author']}",
+            create_pr=True,
+        )
+        print(f"Pull request created: {commit.pr_url or ''}")
+        return cast(str, commit.pr_url)
+
+    def _generate_constructor_code(self) -> str:
+        """Generate a Python constructor call string for a plain gr.HTML() instance."""
+        lines = ["gr.HTML("]
+        if self.value is not None:
+            lines.append(f"    value={self.value!r},")
+        if self.label is not None:
+            lines.append(f"    label={str(self.label)!r},")
+        lines.append(f'    html_template="""\n{self.html_template}\n    """,')
+        if self.css_template:
+            lines.append(f'    css_template="""\n{self.css_template}\n    """,')
+        if self.js_on_load:
+            lines.append(f'    js_on_load="""\n{self.js_on_load}\n    """,')
+        for k, v in self.props.items():
+            lines.append(f"    {k}={v!r},")
+        lines.append(")")
+        return "\n".join(lines)
+    from typing import Callable, Literal, Sequence, Any, TYPE_CHECKING
+    from gradio.blocks import Block
+    if TYPE_CHECKING:
+        from gradio.components import Timer
+        from gradio.components.base import Component
+
+    
+    def change(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def input(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def click(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def double_click(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def submit(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def stop(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def edit(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def clear(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def play(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def pause(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def end(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def start_recording(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if this is called from the queue (only relevant if batch=True)
+            preprocess: if False, will not run preprocessing of component data before running 'fn' (e.g. leaving it as a base64 string if this method is called with the `Image` component).
+            postprocess: if False, will not run postprocessing of component data before returning 'fn' output to the browser.
+            cancels: a list of other events to cancel when this listener is triggered. For example, setting cancels=[click_event] will cancel the click_event, where click_event is the return value of another components .click method. Functions that have not yet run (or generators that are iterating) will be cancelled, but functions that are currently running will be allowed to finish.
+            every: continously calls `value` to recalculate it if `value` is a function (has no effect otherwise). Can provide a Timer whose tick resets `value`, or a float that provides the regular interval for the reset Timer.
+            trigger_mode: if "once" (default for all events except `.change()`) would not allow any submissions while an event is pending. If set to "multiple", unlimited submissions are allowed while pending, and "always_last" (default for `.change()` and `.key_up()` events) would allow a second submission after the pending event is complete.
+            js: optional frontend js method to run before running 'fn'. Input arguments for js method are values of 'inputs' and 'outputs', return should be a list of values for output components.
+            concurrency_limit: if set, this is the maximum number of this event that can be running simultaneously. Can be set to None to mean no concurrency_limit (any number of this event can be running simultaneously). Set to "default" to use the default concurrency limit (defined by the `default_concurrency_limit` parameter in `Blocks.queue()`, which itself is 1 by default).
+            concurrency_id: if set, this is the id of the concurrency group. Events with the same concurrency_id will be limited by the lowest set concurrency_limit.
+            api_visibility: controls the visibility and accessibility of this endpoint. Can be "public" (shown in API docs and callable by clients), "private" (hidden from API docs and not callable by the Gradio client libraries), or "undocumented" (hidden from API docs but callable by clients and via gr.load). If fn is None, api_visibility will automatically be set to "private".
+            key: A unique key for this event listener to be used in @gr.render(). If set, this value identifies an event as identical across re-renders when the key is identical.
+            api_description: Description of the API endpoint. Can be a string, None, or False. If set to a string, the endpoint will be exposed in the API docs with the given description. If None, the function's docstring will be used as the API endpoint description. If False, then no description will be displayed in the API docs.
+            validator: Optional validation function to run before the main function. If provided, this function will be executed first with queue=False, and only if it completes successfully will the main function be called. The validator receives the same inputs as the main function.
+        
+        """
+        ...
+    
+    def pause_recording(self,
+        fn: Callable[..., Any] | None = None,
+        inputs: Block | Sequence[Block] | set[Block] | None = None,
+        outputs: Block | Sequence[Block] | None = None,
+        api_name: str | None = None,
+        scroll_to_output: bool = False,
+        show_progress: Literal["full", "minimal", "hidden"] = "full",
+        show_progress_on: Component | Sequence[Component] | None = None,
+        queue: bool | None = None,
+        batch: bool = False,
+        max_batch_size: int = 4,
+        preprocess: bool = True,
+        postprocess: bool = True,
+        cancels: dict[str, Any] | list[dict[str, Any]] | None = None,
+        every: Timer | float | None = None,
+        trigger_mode: Literal["once", "multiple", "always_last"] | None = None,
+        js: str | Literal[True] | None = None,
+        concurrency_limit: int | None | Literal["default"] = "default",
+        concurrency_id: str | None = None,
+        api_visibility: Literal["public", "private", "undocumented"] = "public",
+        key: int | str | tuple[int | str, ...] | None = None,
+        api_description: str | None | Literal[False] = None,
+        validator: Callable[..., Any] | None = None,
+    
+        ) -> Dependency:
+        """
+        Parameters:
+            fn: the function to call when this event is triggered. Often a machine learning model's prediction function. Each parameter of the function corresponds to one input component, and the function should return a single value or a tuple of values, with each element in the tuple corresponding to one output component.
+            inputs: list of gradio.components to use as inputs. If the function takes no inputs, this should be an empty list.
+            outputs: list of gradio.components to use as outputs. If the function returns no outputs, this should be an empty list.
+            api_name: defines how the endpoint appears in the API docs. Can be a string or None. If set to a string, the endpoint will be exposed in the API docs with the given name. If None (default), the name of the function will be used as the API endpoint.
+            scroll_to_output: if True, will scroll to output component on completion
+            show_progress: how to show the progress animation while event is running: "full" shows a spinner which covers the output component area as well as a runtime display in the upper right corner, "minimal" only shows the runtime display, "hidden" shows no progress animation at all
+            show_progress_on: Component or list of components to show the progress animation on. If None, will show the progress animation on all of the output components.
+            queue: if True, will place the request on the queue, if the queue has been enabled. If False, will not put this event on the queue, even if the queue has been enabled. If None, will use the queue setting of the gradio app.
+            batch: if True, then the function should process a batch of inputs, meaning that it should accept a list of input values for each parameter. The lists should be of equal length (and be up to length `max_batch_size`). The function is then *required* to return a tuple of lists (even if there is only 1 output component), with each list in the tuple corresponding to one output component.
+            max_batch_size: maximum number of inputs to batch together if t

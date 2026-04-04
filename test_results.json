@@ -1,0 +1,111 @@
+[
+  {
+    "id": 1,
+    "question": "What does 'handbook first' mean at GitLab?",
+    "type": "positive",
+    "expected_answer": "Handbook first means documenting in the handbook before taking any action. Instead of communicating changes through presentations, emails, or chat messages, team members should propose changes via merge requests to the handbook. This ensures there is no duplication, the handbook is always up to date, and others can better contribute.",
+    "chatbot_answer": "Having a **\"handbook first\"** mentality ensures there is no duplication; the handbook is always up to date, and others are better able to contribute. (about_handbook-usage.md)\n\n---\n**Sources:**\n- `about_handbook-usage.md`\n- `about_direction.md`\n- `communication_confidentiality-levels.md`",
+    "retrieved_sources": [
+      "about_handbook-usage.md",
+      "about_direction.md",
+      "communication_confidentiality-levels.md"
+    ],
+    "context_found": true
+  },
+  {
+    "id": 2,
+    "question": "What is the process for proposing changes to the GitLab handbook?",
+    "type": "positive",
+    "expected_answer": "Process changes should be communicated by linking to the merged diff (a commit showing changes before and after). The documentation should not be treated as a lower priority task after the change is made. Changes should be introduced iteratively through small merge requests to help gain adoption.",
+    "chatbot_answer": "Here's the process for proposing changes to the GitLab handbook, according to the provided context:\n\n1. A proposal is made in a merge request to the handbook.\n2. Once merged, the change is announced by linking to the diff in the MR or commit. Major changes are posted in the #whats-happening-at-gitlab Slack channel, medium ones in the #handbook channel with a one-line summary.\n3. If there was an issue related to the change, it should be closed out with a link to the diff.\n\n(Source: about_handbook-usage.md)\n\n---\n**Sources:**\n- `about_handbook-usage.md`\n- `about_direction.md`",
+    "retrieved_sources": [
+      "about_handbook-usage.md",
+      "about_direction.md"
+    ],
+    "context_found": true
+  },
+  {
+    "id": 3,
+    "question": "What is the GitLab Handbook and who is it for?",
+    "type": "positive",
+    "expected_answer": "The GitLab Handbook is the single source of truth for how GitLab operates, including processes, policies, and product direction. It is entirely open to the public. Its target audiences include GitLab team members, leadership, potential applicants, and current or potential GitLab product users.",
+    "chatbot_answer": "The GitLab Handbook is the single source of truth for how GitLab operates, including processes, policies, and product direction ([about_direction.md](about_direction.md)). \n\nIt is for:\n\n*   **GitLab Team Members:** To use and update processes and product direction.\n*   **Leadership:** To reference content during presentations and for external teams to use as inspiration.\n*   **Potential Applicants:** To learn about expectations, compensation, values, and policies.\n*   **Current and Potential Users:** To understand GitLab's product direction, strategy, and vision ([about_direction.md](about_direction.md)).\n\n---\n**Sources:**\n- `about_direction.md`\n- `about_handbook-usage.md`",
+    "retrieved_sources": [
+      "about_direction.md",
+      "about_handbook-usage.md"
+    ],
+    "context_found": true
+  },
+  {
+    "id": 4,
+    "question": "When should an issue be escalated via the handbook escalation process?",
+    "type": "positive",
+    "expected_answer": "Issues should only be escalated if they relate to: the default branch being broken, broken infrastructure, or time-sensitive updates to the handbook where there is an issue in making the update. Work-stopping issues should be reported in the #handbook-escalation Slack channel.",
+    "chatbot_answer": "Issues should only be escalated if it relates to: the Handbook, a team member's roles and responsibilities, or the `content-sites` projects. (about_escalation.md)\n\n---\n**Sources:**\n- `about_maintenance.md`\n- `about_escalation.md`",
+    "retrieved_sources": [
+      "about_maintenance.md",
+      "about_escalation.md"
+    ],
+    "context_found": true
+  },
+  {
+    "id": 5,
+    "question": "What is the 'Single Source of Truth' principle at GitLab?",
+    "type": "positive",
+    "expected_answer": "Single Source of Truth (SSoT) means eliminating repetition in documentation. Instead of repeating content, it should be cross-linked. If content is copied somewhere new, it should be removed from the original location and replaced with a link. Duplicate content leads to more work maintaining multiple locations and risks outdated information.",
+    "chatbot_answer": "According to the GitLab Handbook, the \u201csingle source of truth\u201d is the GitLab Handbook itself, which contains how GitLab operates, including processes, policies, and product direction. (about_direction.md)\n\n---\n**Sources:**\n- `company_culture_all-remote_building-culture.md`\n- `about_handbook-usage.md`\n- `about_direction.md`",
+    "retrieved_sources": [
+      "company_culture_all-remote_building-culture.md",
+      "about_handbook-usage.md",
+      "about_direction.md"
+    ],
+    "context_found": true
+  },
+  {
+    "id": 6,
+    "question": "What are the picture requirements for the GitLab team page?",
+    "type": "positive",
+    "expected_answer": "Profile pictures must be cropped to a perfect square, have a maximum dimension of 400x400 pixels, be in JPEG or PNG format, and kept below 100KB in file size. The filename should be the person's name in lowercase.",
+    "chatbot_answer": "Error calling LLM: litellm.RateLimitError: litellm.RateLimitError: geminiException - {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 15000, model: gemma-3-27b\\nPlease retry in 31.257321962s.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Learn more about Gemini API quotas\",\n            \"url\": \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.QuotaFailure\",\n        \"violations\": [\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\",\n            \"quotaId\": \"GenerateContentInputTokensPerModelPerMinute-FreeTier\",\n            \"quotaDimensions\": {\n              \"location\": \"global\",\n              \"model\": \"gemma-3-27b\"\n            },\n            \"quotaValue\": \"15000\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.RetryInfo\",\n        \"retryDelay\": \"31s\"\n      }\n    ]\n  }\n}\n\n\n---\n**Sources:**\n- `company_culture_all-remote_gitlab-for-remote.md`\n- `about_editing-handbook_edit-team-page.md`\n- `company_culture_all-remote_being-a-great-remote-manager.md`",
+    "retrieved_sources": [
+      "company_culture_all-remote_gitlab-for-remote.md",
+      "about_editing-handbook_edit-team-page.md",
+      "company_culture_all-remote_being-a-great-remote-manager.md"
+    ],
+    "context_found": true
+  },
+  {
+    "id": 7,
+    "question": "How does GitLab recommend using presentations versus the handbook?",
+    "type": "positive",
+    "expected_answer": "GitLab recommends screenshotting the handbook and providing links rather than creating separate presentations for evergreen content. Presentations are appropriate for ephemeral content like board presentations, but ongoing training or process content should live in the handbook. If a synchronous presentation is needed, the default should be sharing your screen and viewing live handbook pages.",
+    "chatbot_answer": "GitLab recommends defaulting to sharing your screen and viewing live handbook pages over a slide presentation if a synchronous presentation is required. The handbook also notes that presentations may look less polished than slides, but the advantages outweigh that concern. (about_handbook-usage.md)\n\n---\n**Sources:**\n- `about_handbook-usage.md`\n- `communication_deep-dives.md`\n- `about_direction.md`",
+    "retrieved_sources": [
+      "about_handbook-usage.md",
+      "communication_deep-dives.md",
+      "about_direction.md"
+    ],
+    "context_found": true
+  },
+  {
+    "id": 8,
+    "question": "What is the capital of France?",
+    "type": "negative",
+    "expected_answer": "The chatbot should refuse to answer, stating this information is not in the GitLab Handbook.",
+    "chatbot_answer": "I couldn't find relevant information in the GitLab Handbook for your question.",
+    "retrieved_sources": [],
+    "context_found": false
+  },
+  {
+    "id": 9,
+    "question": "What is GitLab's current stock price?",
+    "type": "negative",
+    "expected_answer": "The chatbot should refuse to answer, stating this information is not in the GitLab Handbook.",
+    "chatbot_answer": "Error calling LLM: litellm.RateLimitError: litellm.RateLimitError: geminiException - {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 15000, model: gemma-3-27b\\nPlease retry in 24.718313813s.\",\n    \"status\": \"RESOURCE_EXHAUSTED\",\n    \"details\": [\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.Help\",\n        \"links\": [\n          {\n            \"description\": \"Learn more about Gemini API quotas\",\n            \"url\": \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.QuotaFailure\",\n        \"violations\": [\n          {\n            \"quotaMetric\": \"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count\",\n            \"quotaId\": \"GenerateContentInputTokensPerModelPerMinute-FreeTier\",\n            \"quotaDimensions\": {\n              \"model\": \"gemma-3-27b\",\n              \"location\": \"global\"\n            },\n            \"quotaValue\": \"15000\"\n          }\n        ]\n      },\n      {\n        \"@type\": \"type.googleapis.com/google.rpc.RetryInfo\",\n        \"retryDelay\": \"24s\"\n      }\n    ]\n  }\n}\n\n\n---\n**Sources:**\n- `company_being-a-public-company.md`\n- `communication_confidentiality-levels.md`",
+    "retrieved_sources": [
+      "company_being-a-public-company.md",
+      "communication_confidentiality-levels.md"
+    ],
+    "context_found": true
+  }
+]

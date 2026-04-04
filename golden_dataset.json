@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "question": "What does 'handbook first' mean at GitLab?",
+    "expected_answer": "Handbook first means documenting in the handbook before taking any action. Instead of communicating changes through presentations, emails, or chat messages, team members should propose changes via merge requests to the handbook. This ensures there is no duplication, the handbook is always up to date, and others can better contribute.",
+    "source_file": "about_handbook-usage.md",
+    "type": "positive"
+  },
+  {
+    "id": 2,
+    "question": "What is the process for proposing changes to the GitLab handbook?",
+    "expected_answer": "Process changes should be communicated by linking to the merged diff (a commit showing changes before and after). The documentation should not be treated as a lower priority task after the change is made. Changes should be introduced iteratively through small merge requests to help gain adoption.",
+    "source_file": "about_handbook-usage.md",
+    "type": "positive"
+  },
+  {
+    "id": 3,
+    "question": "What is the GitLab Handbook and who is it for?",
+    "expected_answer": "The GitLab Handbook is the single source of truth for how GitLab operates, including processes, policies, and product direction. It is entirely open to the public. Its target audiences include GitLab team members, leadership, potential applicants, and current or potential GitLab product users.",
+    "source_file": "about_direction.md",
+    "type": "positive"
+  },
+  {
+    "id": 4,
+    "question": "When should an issue be escalated via the handbook escalation process?",
+    "expected_answer": "Issues should only be escalated if they relate to: the default branch being broken, broken infrastructure, or time-sensitive updates to the handbook where there is an issue in making the update. Work-stopping issues should be reported in the #handbook-escalation Slack channel.",
+    "source_file": "about_escalation.md",
+    "type": "positive"
+  },
+  {
+    "id": 5,
+    "question": "What is the 'Single Source of Truth' principle at GitLab?",
+    "expected_answer": "Single Source of Truth (SSoT) means eliminating repetition in documentation. Instead of repeating content, it should be cross-linked. If content is copied somewhere new, it should be removed from the original location and replaced with a link. Duplicate content leads to more work maintaining multiple locations and risks outdated information.",
+    "source_file": "about_handbook-usage.md",
+    "type": "positive"
+  },
+  {
+    "id": 6,
+    "question": "What are the picture requirements for the GitLab team page?",
+    "expected_answer": "Profile pictures must be cropped to a perfect square, have a maximum dimension of 400x400 pixels, be in JPEG or PNG format, and kept below 100KB in file size. The filename should be the person's name in lowercase.",
+    "source_file": "about_editing-handbook_edit-team-page.md",
+    "type": "positive"
+  },
+  {
+    "id": 7,
+    "question": "How does GitLab recommend using presentations versus the handbook?",
+    "expected_answer": "GitLab recommends screenshotting the handbook and providing links rather than creating separate presentations for evergreen content. Presentations are appropriate for ephemeral content like board presentations, but ongoing training or process content should live in the handbook. If a synchronous presentation is needed, the default should be sharing your screen and viewing live handbook pages.",
+    "source_file": "about_handbook-usage.md",
+    "type": "positive"
+  },
+  {
+    "id": 8,
+    "question": "What is the capital of France?",
+    "expected_answer": "The chatbot should refuse to answer, stating this information is not in the GitLab Handbook.",
+    "source_file": null,
+    "type": "negative"
+  },
+  {
+    "id": 9,
+    "question": "What is GitLab's current stock price?",
+    "expected_answer": "The chatbot should refuse to answer, stating this information is not in the GitLab Handbook.",
+    "source_file": null,
+    "type": "negative"
+  }
+]
