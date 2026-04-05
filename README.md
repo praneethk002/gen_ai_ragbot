@@ -12,6 +12,7 @@ python_version: "3.11"
 ---
 
 
+
 # GitLab Handbook RAG Chatbot
 
 A Retrieval-Augmented Generation (RAG) chatbot that answers questions about the
