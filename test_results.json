@@ -4,7 +4,7 @@
     "question": "What does 'handbook first' mean at GitLab?",
     "type": "positive",
     "expected_answer": "Handbook first means documenting in the handbook before taking any action. Instead of communicating changes through presentations, emails, or chat messages, team members should propose changes via merge requests to the handbook. This ensures there is no duplication, the handbook is always up to date, and others can better contribute.",
-    "chatbot_answer": "Having a **\"handbook first\"** mentality ensures there is no duplication; the handbook is always up to date, and others are better able to contribute. (about_handbook-usage.md)\n\n---\n**Sources:**\n- `about_handbook-usage.md`\n- `about_direction.md`\n- `communication_confidentiality-levels.md`",
+    "chatbot_answer": "Having a \"handbook first\" mentality ensures there's no duplication of information, the handbook is always up-to-date, and others can easily contribute. It also means that if information can be made public, it should be captured in the public handbook, rather than being kept internal. \n\nYou can find more details about this in the handbook itself under \"about_handbook-usage.md\".\n\n---\n**Sources:**\n- `about_handbook-usage.md`\n- `about_direction.md`\n- `communication_confidentiality-levels.md`",
     "retrieved_sources": [
       "about_handbook-usage.md",
       "about_direction.md",
@@ -17,7 +17,7 @@
     "question": "What is the process for proposing changes to the GitLab handbook?",
     "type": "positive",
     "expected_answer": "Process changes should be communicated by linking to the merged diff (a commit showing changes before and after). The documentation should not be treated as a lower priority task after the change is made. Changes should be introduced iteratively through small merge requests to help gain adoption.",
-    "chatbot_answer": "Here's the process for proposing changes to the GitLab handbook, according to the provided context:\n\n1. A proposal is made in a merge request to the handbook.\n2. Once merged, the change is announced by linking to the diff in the MR or commit. Major changes are posted in the #whats-happening-at-gitlab Slack channel, medium ones in the #handbook channel with a one-line summary.\n3. If there was an issue related to the change, it should be closed out with a link to the diff.\n\n(Source: about_handbook-usage.md)\n\n---\n**Sources:**\n- `about_handbook-usage.md`\n- `about_direction.md`",
+    "chatbot_answer": "Here's how you propose changes to the GitLab handbook:\n\n1. A problem comes up, often in an issue or chat.\n2. You make a proposal in a merge request to the handbook.\n3. Once merged, the change is announced by linking to the diff in the MR or commit. Major changes go in the #whats-happening-at-gitlab Slack channel, medium ones in #handbook with a one-line summary. If there was an issue, close it out with a link to the diff.\n\n(This is based on the \"Flow structure\" section in the handbook.)\n\n---\n**Sources:**\n- `about_handbook-usage.md`\n- `about_direction.md`",
     "retrieved_sources": [
       "about_handbook-usage.md",
       "about_direction.md"
@@ -29,7 +29,7 @@
     "question": "What is the GitLab Handbook and who is it for?",
     "type": "positive",
     "expected_answer": "The GitLab Handbook is the single source of truth for how GitLab operates, including processes, policies, and product direction. It is entirely open to the public. Its target audiences include GitLab team members, leadership, potential applicants, and current or potential GitLab product users.",
-    "chatbot_answer": "The GitLab Handbook is the single source of truth for how GitLab operates, including processes, policies, and product direction ([about_direction.md](about_direction.md)). \n\nIt is for:\n\n*   **GitLab Team Members:** To use and update processes and product direction.\n*   **Leadership:** To reference content during presentations and for external teams to use as inspiration.\n*   **Potential Applicants:** To learn about expectations, compensation, values, and policies.\n*   **Current and Potential Users:** To understand GitLab's product direction, strategy, and vision ([about_direction.md](about_direction.md)).\n\n---\n**Sources:**\n- `about_direction.md`\n- `about_handbook-usage.md`",
+    "chatbot_answer": "The GitLab Handbook is the single source of truth for how GitLab operates \u2013 covering processes, policies, and product direction. It's open to the public, in line with GitLab's value of transparency.\n\nIt's for a few different groups of people: GitLab team members (who are responsible for using and updating it), GitLab leadership, potential job applicants, and current/potential GitLab users. Basically, anyone who wants to know how GitLab runs! \n\nYou can find more details about its purpose and target audience in the \"Handbook Direction\" section.\n\n---\n**Sources:**\n- `about_direction.md`\n- `about_handbook-usage.md`",
     "retrieved_sources": [
       "about_direction.md",
       "about_handbook-usage.md"
@@ -41,7 +41,7 @@
     "question": "When should an issue be escalated via the handbook escalation process?",
     "type": "positive",
     "expected_answer": "Issues should only be escalated if they relate to: the default branch being broken, broken infrastructure, or time-sensitive updates to the handbook where there is an issue in making the update. Work-stopping issues should be reported in the #handbook-escalation Slack channel.",
-    "chatbot_answer": "Issues should only be escalated if it relates to: the Handbook, a team member's roles and responsibilities, or the `content-sites` projects. (about_escalation.md)\n\n---\n**Sources:**\n- `about_maintenance.md`\n- `about_escalation.md`",
+    "chatbot_answer": "Issues should only be escalated if they relate to the Handbook itself. Specifically, if it's a work-stopping issue, report it in the [#handbook-escalation](https://gitlab.slack.com/archives/CVDP3HG5V) Slack channel. Otherwise, create an issue in the relevant [content sites repository](https://gitlab.com/gitlab-com/content-sites/) and post in the [#handbook Slack channel](https://gitlab.enterprise.slack.com/archives/C81PT2ALD).\n\nIf the issue relates to the GitLab product or the infrastructure running the handbook, you should escalate it to the Reliability Engineering team instead.\n\n---\n**Sources:**\n- `about_maintenance.md`\n- `about_escalation.md`",
     "retrieved_sources": [
       "about_maintenance.md",
       "about_escalation.md"
@@ -53,7 +53,7 @@
     "question": "What is the 'Single Source of Truth' principle at GitLab?",
     "type": "positive",
     "expected_answer": "Single Source of Truth (SSoT) means eliminating repetition in documentation. Instead of repeating content, it should be cross-linked. If content is copied somewhere new, it should be removed from the original location and replaced with a link. Duplicate content leads to more work maintaining multiple locations and risks outdated information.",
-    "chatbot_answer": "According to the GitLab Handbook, the \u201csingle source of truth\u201d is the GitLab Handbook itself, which contains how GitLab operates, including processes, policies, and product direction. (about_direction.md)\n\n---\n**Sources:**\n- `company_culture_all-remote_building-culture.md`\n- `about_handbook-usage.md`\n- `about_direction.md`",
+    "chatbot_answer": "According to the handbook, the GitLab Handbook itself is the single source of truth for how GitLab operates \u2013 that includes processes, policies, and product direction. It's designed to be open and transparent, and available to everyone. \n\nYou can find more details in the [Handbook Direction](https://handbook.gitlab.com/handbook/about_direction/) section.\n\n---\n**Sources:**\n- `company_culture_all-remote_building-culture.md`\n- `about_handbook-usage.md`\n- `about_direction.md`",
     "retrieved_sources": [
       "company_culture_all-remote_building-culture.md",
       "about_handbook-usage.md",
@@ -66,7 +66,7 @@
     "question": "What are the picture requirements for the GitLab team page?",
     "type": "positive",
     "expected_answer": "Profile pictures must be cropped to a perfect square, have a maximum dimension of 400x400 pixels, be in JPEG or PNG format, and kept below 100KB in file size. The filename should be the person's name in lowercase.",
-    "chatbot_answer": "For your GitLab team page picture, the requirements are:\n\n- Crop the image to a perfect square.\n- Maximum dimension: 400 x 400 pixels.\n- Use JPEG (.jpg) or PNG (.png) format.\n- Keep the file size below 100k (minify with something like tinyjpg.com).\n- Test the image in color and black-and-white (you'll upload the color version).\n- Name the file `yournameinlowercase` with the appropriate file extension.\n\n(Source: about_editing-handbook_edit-team-page.md)\n\n---\n**Sources:**\n- `about_editing-handbook_edit-team-page.md`",
+    "chatbot_answer": "Here are the picture requirements for your team page photo:\n\n*   Crop the image to a perfect square.\n*   Maximum dimension is 400 by 400 pixels.\n*   Use the JPEG (`.jpg`) or PNG (`.png`) format.\n*   Keep the file size below 100k (you can minify using [tinyjpg.com](https://tinyjpg.com/)).\n*   Test the image in color and black-and-white.\n*   Name the file `yournameinlowercase` with the appropriate file extension.\n\nThis information comes from the `about_editing-handbook_edit-team-page.md` file.\n\n---\n**Sources:**\n- `company_culture_all-remote_gitlab-for-remote.md`\n- `about_editing-handbook_edit-team-page.md`\n- `company_culture_all-remote_being-a-great-remote-manager.md`",
     "retrieved_sources": [
       "company_culture_all-remote_gitlab-for-remote.md",
       "about_editing-handbook_edit-team-page.md",
@@ -79,7 +79,7 @@
     "question": "How does GitLab recommend using presentations versus the handbook?",
     "type": "positive",
     "expected_answer": "GitLab recommends screenshotting the handbook and providing links rather than creating separate presentations for evergreen content. Presentations are appropriate for ephemeral content like board presentations, but ongoing training or process content should live in the handbook. If a synchronous presentation is needed, the default should be sharing your screen and viewing live handbook pages.",
-    "chatbot_answer": "GitLab recommends defaulting to sharing your screen and viewing live handbook pages over a slide presentation if a synchronous presentation is required. The handbook also notes that presentations may look less polished than slides, but the advantages outweigh that concern. (about_handbook-usage.md)\n\n---\n**Sources:**\n- `about_handbook-usage.md`\n- `communication_deep-dives.md`\n- `about_direction.md`",
+    "chatbot_answer": "GitLab recommends that if a synchronous presentation is required, you should default to sharing your screen and viewing live handbook pages instead of using a slide presentation. The handbook notes that while the presentation might look less polished, the advantages outweigh that concern. \n\nYou can find more about handbook usage [here](/handbook/about/handbook-usage/).\n\n---\n**Sources:**\n- `about_handbook-usage.md`\n- `communication_deep-dives.md`\n- `about_direction.md`",
     "retrieved_sources": [
       "about_handbook-usage.md",
       "communication_deep-dives.md",
@@ -92,7 +92,7 @@
     "question": "What is the capital of France?",
     "type": "negative",
     "expected_answer": "The chatbot should refuse to answer, stating this information is not in the GitLab Handbook.",
-    "chatbot_answer": "I couldn't find relevant information in the GitLab Handbook for your question.",
+    "chatbot_answer": "I couldn't find anything in the GitLab Handbook about the capital of France. It looks like you're asking a general knowledge question, and the handbook focuses on GitLab's internal processes and policies!",
     "retrieved_sources": [],
     "context_found": false
   },
@@ -101,7 +101,7 @@
     "question": "What is GitLab's current stock price?",
     "type": "negative",
     "expected_answer": "The chatbot should refuse to answer, stating this information is not in the GitLab Handbook.",
-    "chatbot_answer": "The GitLab Handbook doesn't contain GitLab's current stock price. It does confirm that GitLab is a public company — it began trading on the Nasdaq Global Select Market on October 14, 2021 under the ticker symbol \"GTLB\" — but for the current price you'll need to check a financial data source directly.\n\n---\n**Sources:**\n- `company_being-a-public-company.md`\n- `communication_confidentiality-levels.md`",
+    "chatbot_answer": "The handbook doesn't mention GitLab's current stock price. It does state that GitLab began trading on the Nasdaq Global Select Market on October 14, 2021, under the ticker symbol \"GTLB,\" and that long-term business performance will be the fundamental driver of the stock price. However, it doesn't provide real-time stock information.\n\n---\n**Sources:**\n- `company_being-a-public-company.md`\n- `communication_confidentiality-levels.md`",
     "retrieved_sources": [
       "company_being-a-public-company.md",
       "communication_confidentiality-levels.md"
