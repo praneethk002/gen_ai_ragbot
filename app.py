@@ -151,7 +151,11 @@ Tell the user that you couldn't find relevant information in the GitLab Handbook
         )
         answer = response.choices[0].message.content.strip()
     except Exception as e:
-        answer = f"Sorry, there was an error generating a response: {str(e)}"
+        # Surface a short, user-friendly message instead of a raw traceback.
+        err_type = type(e).__name__
+        if "RateLimit" in err_type or "429" in str(e):
+            return "I'm being rate limited right now. Please wait a moment and try again."
+        return "Sorry, I couldn't generate a response just now. Please try again in a moment."
 
     # 4. Append source citations (required by assignment spec)
     # Kept subtle so the answer reads naturally
