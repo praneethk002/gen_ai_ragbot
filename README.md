@@ -8,7 +8,9 @@ sdk_version: 4.44.0
 app_file: app.py
 pinned: false
 license: mit
+python_version: "3.11"
 ---
+
 
 # GitLab Handbook RAG Chatbot
 
